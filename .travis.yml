@@ -4,6 +4,6 @@ python:
 - 2.7
 - 3.5
 
-install: true
+install: pip install sqlalchemy
 
 script: nosetests

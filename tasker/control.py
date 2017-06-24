@@ -410,13 +410,13 @@ if __name__ == '__main__':
     d = get_user_by_name(name='phil')
     print(d.name)
     for t in d.tasks:
-        print t
+        print(t)
 
     ps = get_all_projects()
-    print ps
+    print(ps)
     me = get_project_by_name(name='me')
-    print me.assets
-    print me.shots
+    print(me.assets)
+    print(me.shots)
     for asset in me.assets:
-        print asset
-        print asset.tasks
+        print(asset)
+        print(asset.tasks)

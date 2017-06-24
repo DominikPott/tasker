@@ -7,7 +7,7 @@ from contextlib import contextmanager
 from tasker import Session, log
 from tasker.model import State, TaskData,CommentData, AssetData, ShotData, LayoutData, ProjectData, UserData
 
-import tasker.templates
+import tasker.templates as templates
 
 
 @contextmanager

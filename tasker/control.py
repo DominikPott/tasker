@@ -5,9 +5,9 @@ import datetime
 from contextlib import contextmanager
 
 from tasker import Session, log
-from model import State, TaskData,CommentData, AssetData, ShotData, LayoutData, ProjectData, UserData
+from tasker.model import State, TaskData,CommentData, AssetData, ShotData, LayoutData, ProjectData, UserData
 
-import templates
+import tasker.templates
 
 
 @contextmanager

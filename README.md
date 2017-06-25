@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/DominikPott/tasker.svg?branch=master)](https://travis-ci.org/DominikPott/tasker)
+[![Documentation Status](https://readthedocs.org/projects/tasker/badge/?version=latest)](http://tasker.readthedocs.io/en/latest/?badge=latest)
 # tasker
 A task manager for animation and vfx film projects.
 

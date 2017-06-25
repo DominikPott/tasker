@@ -10,7 +10,9 @@ Welcome to tasker's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   README
    api
+
 
 
 Indices and tables

@@ -2,14 +2,16 @@ language: python
 
 python:
 - 2.7
+- 3.5
 
 before_install:
-    pip install codecov, codeclimate-test-reporter
+    -pip install codecov
+    -pip install codeclimate-test-reporter
 
 install: pip install sqlalchemy
 
 script: nosetests
 
 after_sucess:
-    codecov
-    codeclimate-test-reporter
+    -codecov
+    -codeclimate-test-reporter

@@ -6,7 +6,6 @@ python:
 
 before_install:
     -pip install codecov
-    -pip install codeclimate-test-reporter
 
 install: pip install sqlalchemy
 

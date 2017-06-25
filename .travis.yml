@@ -4,12 +4,12 @@ python:
 - 2.7
 - 3.5
 
-before_install:
-    - pip install codecov
 
 install: pip install sqlalchemy
 
-script: nosetests
+script: nosetest --with-coverage
 
+before_install:
+    pip install codecov
 after_sucess:
     codecov

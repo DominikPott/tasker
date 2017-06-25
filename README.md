@@ -12,3 +12,8 @@ PyQt5
 PyQt4
 PySide2
 PySide
+
+TODO:
+- adding subtasks to existing tasks
+- exchange the current state handling implementation with a finite state machine
+- increase test coverage

@@ -7,3 +7,6 @@ python:
 install: pip install sqlalchemy
 
 script: nosetests
+
+after_sucess:
+  - codeclimate-test-reporter

@@ -1,3 +1,23 @@
+"""tasker project management package.
+
+the :mod:`tasker` module contains a model view control stucture to view and manipulate task data.
+
+- :mod:`tasker.model`
+- :mod:`tasker.control`
+- :mod:`tasker.ui`
+- :mod:`tasker.db_cofig`
+- :mod:`tasker.templates`
+
+
+One can use the :func:`tasker.control.new_project` to create a new project in the database to hold tasks relationships
+and states.
+
+Example:
+
+>>> import tasker.control
+>>> tasker.control.new_project(name='test_project')
+"""
+
 import logging
 
 FORMAT = "%(filename)s:%(funcName)s - %(message)s"

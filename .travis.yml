@@ -7,7 +7,7 @@ python:
 
 install: pip install sqlalchemy
 
-script: nosetest --with-coverage
+script: nosetests --with-coverage
 
 before_install:
     pip install codecov

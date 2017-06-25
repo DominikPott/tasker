@@ -12,5 +12,4 @@ install: pip install sqlalchemy
 script: nosetests
 
 after_sucess:
-    -codecov
-    -codeclimate-test-reporter
+    codecov

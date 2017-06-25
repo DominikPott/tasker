@@ -1,13 +1,17 @@
-__author__ = 'Dominik'
+"""Data structures and bindings to work with sql alchemy.
+
+:mod:`tasker.model` this module holds datastrucktures which are placed in the project database.
+They shouldn't be accessed directly only through the :mod:`tasker.control` functions.
+"""
 
 from sqlalchemy import Table, Column, ForeignKey, Integer, String, DateTime,  create_engine
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import as_declarative, declared_attr
 from sqlalchemy.ext.associationproxy import association_proxy
 
-from tasker import log
 from tasker.db_config import database
 
+__author__ = 'Dominik'
 
 class State(object):
     '''

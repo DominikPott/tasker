@@ -12,6 +12,7 @@ Welcome to tasker's documentation!
 
    README
    api
+   templates
 
 
 

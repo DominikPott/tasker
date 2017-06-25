@@ -1,5 +1,21 @@
-__author__ = 'Dominik'
-__version__ = '0.0.1'
+"""API for the tasker module.
+
+the :mod:`tasker.control` module contains the api to generate projects and work with tasks.
+
+This file is the api which should be used to work with the tasker module.
+
+- :mod:`tasker.db_cofig`
+- :mod:`tasker.templates`
+
+
+One can use the :func:`tasker.control.new_project` to create a new project in the database to hold tasks relationships
+and states.
+
+Example:
+
+>>> import tasker.control
+>>> tasker.control.new_project(name='test_project')
+"""
 
 import datetime
 from contextlib import contextmanager
@@ -9,6 +25,8 @@ from tasker.model import State, TaskData,CommentData, AssetData, ShotData, Layou
 
 import tasker.templates as templates
 
+__author__ = 'Dominik'
+__version__ = '0.1.0'
 
 @contextmanager
 def session_scope():

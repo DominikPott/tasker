@@ -1,5 +1,5 @@
 Templates
 =========
 
-.. automodule:: templates
+.. automodule:: tasker.templates
     :members:

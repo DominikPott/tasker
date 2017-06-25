@@ -12,4 +12,4 @@ script: nosetests --with-coverage
 before_install:
     pip install codecov
 after_sucess:
-    codecov
+    codecov --token=6a49f528-5c47-4a4f-b302-43d6f5a8b6ad

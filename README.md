@@ -8,7 +8,9 @@
 # tasker
 A task manager for animation and vfx film projects.
 
-[wiki]:http://tasker.readthedocs.io/en/latest
+[wiki - tasker.readthedocs.io](http://tasker.readthedocs.io/en/latest)
+
+
 
 
 #### requirement:

@@ -13,20 +13,18 @@ A task manager for animation and vfx film projects.
 
 
 
-#### requirement:
+#### Requirements:
 - pyhton 2.7+
 - qtpy
 - sqlalchemy
 
-
-and if you run it as a standalone tool and NOT from a dcc application like maya, nuke or houdini:
-- PyQt5
-- PyQt4
-- PySide2
-- PySide
+to run in standalone GUI mode you need also any of:
+- PyQt4/5
+- PySide/PySide2
 
 
-Example SideEffects Houdini:
+#### Examples:
+SideEffects Houdini:
 
     import hou  # Houdini Api
     import tasker.ui as tasker
@@ -34,7 +32,7 @@ Example SideEffects Houdini:
     window = tasker.MainWindow(parent=houdini_window)
     window.show()
 
-Example Foundry Nuke:
+Foundry Nuke:
 
     import tasker.ui as tasker
     reload(tasker)
@@ -57,7 +55,7 @@ have a look into the template.py There you can define new tasks, task templates 
 
 
 
-TODO:
+#### TODO:
 - adding subtasks to existing tasks
 - exchange the current state handling implementation with a finite state machine
 - increase test coverage

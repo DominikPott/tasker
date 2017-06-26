@@ -285,9 +285,9 @@ class Layout(object):
 
 
 class Project(object):
-    """Used to control the ProjectModel from the database.
-    It should handle asset and shot creation and most functions which needs an association to the actual project.
-    :param model.ProjectModel: data for the current object from the database.
+    """A Project holds tasks, assets and shots. Is is also used for interaction with those.
+    Use a project object to generate and interact with task, asstes and shots.
+
     """
 
     def __init__(self, model):
@@ -302,23 +302,48 @@ class Project(object):
 
     @property
     def assets(self):
+        """Gets the assets associated with the current project.
+
+        Returns:
+            list(Asset): A list of Asset instances for the current project.
+
+        """
         with session_scope() as session:
             assets = session.query(AssetData).filter(AssetData.project_id==self.id)
             return [Asset(asset_data) for asset_data in assets]
 
     @property
     def shots(self):
+        """Get the shots associated with this project.
+
+        Returns:
+            list(Shot): Shot instances for all shots in the current project.
+
+        """
         with session_scope() as session:
             shots = session.query(ShotData).filter(ShotData.project_id==self.id)
             return [Shot(shot_data) for shot_data in shots]
 
     @property
     def layouts(self):
+        """Get the layouts associated with this project.
+
+        Returns:
+            list(Layouts): layout instances for all layouts in the current project.
+
+        """
         with session_scope() as session:
             layouts = session.query(LayoutData).filter(LayoutData.project_id==self.id)
             return [Layout(layout_data) for layout_data in layouts]
 
     def new_asset(self, name, template=None):
+        """ Creates a new asset with the given name in the project.
+        The new shot will use the provided template to generate tasks and dependenciesfor itself.
+
+        Args:
+            name (str): name of the new asset. Aborts if an asset with this name already exists.
+            template (dict): A configuration file to generate tasks and dependencies for the new asset from.
+        """
         log.info('New Asset {name}'.format(name=name))
         if not template:
             log.info('No asset template supplied. Using animation_asset.')
@@ -342,10 +367,11 @@ class Project(object):
             project.assets.append(asset)
 
     def new_shot(self, name, template=None):
-        """
+        """ Creates a new shot with the given name in the project.
+        The new shot will use the provided template to generate tasks and dependenciesfor itself.
 
         Args:
-            name (str): name of the new asset. Aborts if an asset with this name already exists.
+            name (str): name of the new shot. Aborts if a shot with this name already exists.
             template (dict): A configuration file to generate tasks and dependencies for the new shot from.
 
         Returns:
@@ -375,8 +401,8 @@ class Project(object):
 
 
 class User(object):
-    """Control class for model.UserData instances.
-    Allows assignment and querying of assignd tasks.
+    """Allows assignment and querying of assignd tasks.
+
     """
 
     def __init__(self, model):
@@ -388,6 +414,12 @@ class User(object):
 
     @property
     def tasks(self):
+        """Get all tasks for the user.
+
+        Returns:
+            list(Task): all tasks which are associated with the user.
+
+        """
         with session_scope() as session:
             tasksData = session.query(TaskData).filter(TaskData.user_id==self.id).all()
             return [Task(taskData) for taskData in tasksData]

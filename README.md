@@ -2,14 +2,19 @@
 [![Codecov](https://codecov.io/github/DominikPott/tasker/coverage.svg?branch=master)](https://codecov.io/github/DominikPott/tasker?branch=master)
 [![Code Climate](https://codeclimate.com/github/DominikPott/tasker/badges/gpa.svg)](https://codeclimate.com/github/DominikPott/tasker)
 [![Documentation Status](https://readthedocs.org/projects/tasker/badge/?version=latest)](http://tasker.readthedocs.io/en/latest/?badge=latest)
+
+![alt text](https://github.com/DominikPott/tasker/tasker/icons/tasker.png "tasker - taskManagement")
+
 # tasker
 A task manager for animation and vfx film projects.
 
-requirement:
+[wiki]:http://tasker.readthedocs.io/en/latest
+
+
+#### requirement:
 - pyhton 2.7+
 - qtpy
 - sqlalchemy
-
 
 
 and if you run it as a standalone tool and NOT from a dcc application like maya, nuke or houdini:
@@ -17,7 +22,6 @@ and if you run it as a standalone tool and NOT from a dcc application like maya,
 - PyQt4
 - PySide2
 - PySide
-
 
 
 Example SideEffects Houdini:

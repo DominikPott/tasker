@@ -2,20 +2,15 @@
 
 the :mod:`tasker` module contains a model view control stucture to view and manipulate task data.
 
-- :mod:`tasker.model`
-- :mod:`tasker.control`
-- :mod:`tasker.ui`
-- :mod:`tasker.db_cofig`
-- :mod:`tasker.templates`
+- :mod:`tasker.model`  # Database strucktures
+- :mod:`tasker.control`  # Main api to work with
+- :mod:`tasker.ui`  # To display data to the end user and let them manipulate it.
+- :mod:`tasker.db_config`  # Location and type of the database you want to use.
+- :mod:`tasker.templates`  # templates for task and task dependencies.
 
 
-One can use the :func:`tasker.control.new_project` to create a new project in the database to hold tasks relationships
-and states.
+The main api module is :mod:`tasker.control`. This holds common functions to generate and manipulate tasks.
 
-Example:
-
->>> import tasker.control
->>> tasker.control.new_project(name='test_project')
 """
 
 import logging

@@ -358,6 +358,12 @@ class User(object):
 
 
 def new_project(name):
+    """Creates a new project with the given name.
+
+    Create a project to hold tasks, assets and shots.
+    Args:
+        name (str): name of the new project
+    """
     project = ProjectData(name=name)
     with session_scope() as session:
         exists = session.query(ProjectData).filter_by(name=name).first()
@@ -369,6 +375,14 @@ def new_project(name):
 
 
 def get_project_by_name(name):
+    """Returns a project instance for the given name if it exists in the database.
+
+    Args:
+        name (str): project to find and return
+
+    Returns:
+        Project: instance for the given name if exists. Otherwise None
+    """
     with session_scope() as session:
         project_model = session.query(ProjectData).filter_by(name=name).first()
         return Project(model=project_model)

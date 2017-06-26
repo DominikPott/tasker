@@ -1,6 +1,8 @@
 """File which holds template definitions for shots and assets.
 
-Zse this file to define new shot and or asset tasks, their dependencies and the order in which they appear in the ui.
+tasker.templates.py
+
+Use this file to define new shot and or asset tasks, their dependencies and the order in which they appear in the UI.
 
 """
 __author__ = 'Dominik'

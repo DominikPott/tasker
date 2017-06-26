@@ -5,15 +5,19 @@
 # tasker
 A task manager for animation and vfx film projects.
 
-requirement:- pyhton 2.7+
+requirement:
+- pyhton 2.7+
 - qtpy
 - sqlalchemy
+
+
 
 and if you run it as a standalone tool and NOT from a dcc application like maya, nuke or houdini:
 - PyQt5
 - PyQt4
 - PySide2
 - PySide
+
 
 
 Example SideEffects Houdini:
@@ -32,6 +36,7 @@ Example Foundry Nuke:
     window.show()
 
 
+
 After that you want to create a new project. To do so go to "Project > New Project".
 After that you can create new assets and shots for this project also from the same menu.
 To assign users:
@@ -42,6 +47,8 @@ To change the state of an task:
 - right click on an task and choose "set state".
 Not all state sets are allowed because tasks are dependend on each other. To see and edit these dependencies
 have a look into the template.py There you can define new tasks, task templates and their dependencies.
+
+
 
 
 TODO:

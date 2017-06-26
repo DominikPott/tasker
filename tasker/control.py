@@ -46,7 +46,10 @@ def session_scope():
 
 
 class Task(object):
-    """Task function object for handeling and manipulating taskData objects."""
+    """A ask is a single unit of process and may be chained together with other tasks via dependencies.
+    Also a user can be associated with it and subtasks may be added.
+    A task may be linked against a shot or asset where it belongs to.
+    """
 
     def __init__(self, model):
         super(Task, self).__init__()
@@ -78,6 +81,10 @@ class Task(object):
 
     @property
     def state(self):
+        """Return the current state of the task.
+        Returns:
+            str: current state
+        """
         with session_scope() as session:
             task_data = session.query(TaskData).filter(TaskData.id == self.id).first()
             return task_data.state
@@ -92,6 +99,14 @@ class Task(object):
             self.update_depender(session=session)
 
     def is_state_allowed(self, state):
+        """Checks if the task may change its state to the given one.
+
+        Args:
+            state (str): name of the new state
+
+        Returns:
+            bool: True if state change is allowed. Otherwise False.
+        """
         if self._is_new_state_same_as_current_state(new_state=state):
             return False
         if not self._is_state_set_allowed(new_state=state):
@@ -178,6 +193,12 @@ class Task(object):
 
     @property
     def comments(self):
+        """All comments associated with this tasks. Normaly entered during state changes.
+
+        Returns:
+            list(Comment): All comments for this task.
+
+        """
         with session_scope() as session:
             comments = session.query(CommentData).filter(CommentData.task_id==self.id).all()
             return [Comment(c) for c in comments]
@@ -236,11 +257,14 @@ class TaskHolder(object):
 
 
 class Asset(TaskHolder):
-    """
-    Asset control for AssetModels. Use this class to associate assets to shots, layouts and tasks.
-    :param model: taskManager.model.AssetData
-    """
+    """Use this class to associate assets to shots, layouts, tasks and projects.
 
+    An asset is a representation of an unit of work for a movie.
+    For example: Tree_a is an asset.
+    This asset may include some polygonal data, some texture maps and even some animation etc which are all associated
+    via folder structures or some database to this asset. To complete an asset, different deparments and tasks are
+    infolved which can/may be representet as task.
+    """
     def __init__(self, model):
         super(Asset, self).__init__(model=model)
 
@@ -318,6 +342,15 @@ class Project(object):
             project.assets.append(asset)
 
     def new_shot(self, name, template=None):
+        """
+
+        Args:
+            name (str): name of the new asset. Aborts if an asset with this name already exists.
+            template (dict): A configuration file to generate tasks and dependencies for the new shot from.
+
+        Returns:
+
+        """
         log.info('New ShotData {name}'.format(name=name))
         if not template:
             log.info('No shot template supplied. Using animation_shot.')

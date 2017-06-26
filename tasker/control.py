@@ -15,6 +15,9 @@ Example:
 
 >>> import tasker.control
 >>> tasker.control.new_project(name='test_project')
+
+
+
 """
 
 import datetime

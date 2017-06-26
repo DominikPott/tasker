@@ -3,7 +3,7 @@
 [![Code Climate](https://codeclimate.com/github/DominikPott/tasker/badges/gpa.svg)](https://codeclimate.com/github/DominikPott/tasker)
 [![Documentation Status](https://readthedocs.org/projects/tasker/badge/?version=latest)](http://tasker.readthedocs.io/en/latest/?badge=latest)
 
-![tasker](https://github.com/DominikPott/tasker/blob/master/tasker/icons/tasker.png" tasker - taskManagement")
+![tasker](https://github.com/DominikPott/tasker/blob/master/tasker/icons/tasker.png)
 
 # tasker
 A task manager for animation and vfx film projects.

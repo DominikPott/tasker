@@ -7,7 +7,7 @@
 # tasker
 A task manager for animation and vfx film projects.
 
-![tasker](https://github.com/DominikPott/tasker/blob/master/tasker/icons/tasker.png)
+<img src="https://github.com/DominikPott/tasker/blob/master/tasker/icons/tasker.png" alt="tasker_icon" width="200" />
 
 ![project_view](https://github.com/DominikPott/tasker/blob/master/docs/source/images/project_view_v001.png)
 ![worklist_view](https://github.com/DominikPott/tasker/blob/master/docs/source/images/worklist_view_v001.png)

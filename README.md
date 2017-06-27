@@ -5,7 +5,7 @@
 
 
 
-# tasker <img src="https://github.com/DominikPott/tasker/blob/master/tasker/icons/tasker.png" alt="tasker_icon" width="24" /> 
+# tasker <img src="https://github.com/DominikPott/tasker/blob/master/tasker/icons/tasker.png" alt="tasker_icon" width="32" /> 
 A task manager for animation and vfx film projects.
 
 

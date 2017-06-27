@@ -5,13 +5,21 @@ the :mod:`tasker.control` module contains the api to generate projects and work 
 Example:
 
 >>> import tasker.control
+>>> import tasker.templates
 >>> tasker.control.new_project(name='test_project')
 >>> project = tasker.control.get_project_by_name('test_project')
 >>> project.new_asset(name='baum_a')
 >>> project.new_shot(name='01_010')
+>>> assets = project.assets
+>>> baum_a = None
+>>> for asset in assets:
+>>>     if 'baum_a' in asset.name:
+>>>         baum_a = asset
+>>> modeling = baum_a.get_task_by_name(name=tasker.templates.modeling)
 >>> tasker.control.new_user(name='user1')
 >>> user = tasker.control.get_user_by_name(name='user1')
-
+>>> modeling.user=user
+>>> state = modeling.state
 
 """
 
@@ -369,7 +377,7 @@ class Project(object):
         log.info('New Asset {name}'.format(name=name))
         if not template:
             log.info('No asset template supplied. Using animation_asset.')
-            template = templates.asset['animation_prop_asset']
+            template = templates.asset['feature_animation_prop_asset']
         tasks = []
         for task_name in template['tasks']:
             tasks.append(TaskData(name=task_name, state=State.can_start))
@@ -402,7 +410,7 @@ class Project(object):
         log.info('New ShotData {name}'.format(name=name))
         if not template:
             log.info('No shot template supplied. Using animation_shot.')
-            template = templates.shot['animation_shot']
+            template = templates.shot['shortfilm_shot']
         tasks = []
         for task_name in template['tasks']:
             tasks.append(TaskData(name=task_name, state=State.can_start))
@@ -572,19 +580,3 @@ def get_user_by_name(name):
         if not user:
             raise ValueError('Username {user} not in database'.format(user=name))
         return User(model=user)
-
-
-if __name__ == '__main__':
-    d = get_user_by_name(name='phil')
-    print(d.name)
-    for t in d.tasks:
-        print(t)
-
-    ps = get_all_projects()
-    print(ps)
-    me = get_project_by_name(name='me')
-    print(me.assets)
-    print(me.shots)
-    for asset in me.assets:
-        print(asset)
-        print(asset.tasks)

@@ -2,47 +2,28 @@
 
 the :mod:`tasker.control` module contains the api to generate projects and work with tasks.
 
-This file is the api which should be used to work with the tasker module.
-
-- :mod:`tasker.db_cofig`
-- :mod:`tasker.templates`
-
-
-One can use the :func:`tasker.control.new_project` to create a new project in the database to hold tasks relationships
-and states.
-
 Example:
 
 >>> import tasker.control
 >>> tasker.control.new_project(name='test_project')
-
+>>> project = tasker.control.get_project_by_name('test_project')
+>>> project.new_asset(name='baum_a')
+>>> project.new_shot(name='01_010')
+>>> tasker.control.new_user(name='user1')
+>>> user = tasker.control.get_user_by_name(name='user1')
 
 
 """
 
 import datetime
-from contextlib import contextmanager
 
-from tasker import Session, log
+from tasker import log, session_scope
 from tasker.model import State, TaskData,CommentData, AssetData, ShotData, LayoutData, ProjectData, UserData
 
 import tasker.templates as templates
 
 __author__ = 'Dominik'
 __version__ = '0.1.0'
-
-@contextmanager
-def session_scope():
-    """Provides a transactional scope around a series of operations."""
-    session = Session()
-    try:
-        yield session
-        session.commit()
-    except:
-        session.rollback()
-        raise
-    finally:
-        session.close()
 
 
 class Task(object):
@@ -65,6 +46,12 @@ class Task(object):
 
     @property
     def user(self):
+        """ The user assigned to this task.
+
+        Returns:
+            User: which is assigned to this task
+
+        """
         with session_scope() as session:
             task = session.query(TaskData).filter(TaskData.id == self.id).first()
             if task.user:
@@ -73,6 +60,12 @@ class Task(object):
 
     @user.setter
     def user(self, user):
+        """Assigns an user to this task.
+
+        Args:
+            user(User): the new user which should be assigned to this task.
+
+        """
         with session_scope() as session:
             task_data = session.query(TaskData).filter(TaskData.id == self.id).first()
             user_data = session.query(UserData).filter(UserData.id == user.id).first()
@@ -81,7 +74,7 @@ class Task(object):
 
     @property
     def state(self):
-        """Return the current state of the task.
+        """The current state of the task.
         Returns:
             str: current state
         """
@@ -91,6 +84,12 @@ class Task(object):
 
     @state.setter
     def state(self, state):
+        """Change the state of this task.
+
+        Args:
+            state (str): name of the state to set this tasks state to.
+
+        """
         with session_scope() as session:
             task_data = session.query(TaskData).filter(TaskData.id == self.id).first()
             log.info('{task} set to {state}'.format(task=self.name, state=state))
@@ -116,7 +115,7 @@ class Task(object):
         return True
 
     def _are_dependencies_fulfilled(self):
-        """Checks if all dependencies for the given task are done."""
+        """Checks if all dependencies (other tasks) for this task are done."""
         with session_scope() as session:
             task = session.query(TaskData).filter(TaskData.id == self.id).first()
             dependencies = task.dependencies
@@ -138,6 +137,10 @@ class Task(object):
         return False
 
     def update_tasks_states(self):
+        """Updates states for this tasks and all dependencies.
+        If a task state is set, other depending tasks may be ready to start.
+        This method update tose and also the database entries.
+        """
         with session_scope() as session:
             self._update_self(session=session)
             self.update_depender(session=session)
@@ -187,6 +190,12 @@ class Task(object):
 
     @property
     def child_tasks(self):
+        """All chilkd/subtasks which belong to this task.
+
+        Returns:
+             list(Task): all child tasks
+
+        """
         with session_scope() as session:
             children_task_data = session.query(TaskData).filter(TaskData.parent_task_id == self.id).all()
             return [Task(child_task) for child_task in children_task_data]
@@ -204,6 +213,12 @@ class Task(object):
             return [Comment(c) for c in comments]
 
     def add_comment(self, text):
+        """Associates a new comment with this task.
+
+        Args:
+            text (str): comment for this task
+
+        """
         time = datetime.datetime.now()
         with session_scope() as session:
             task_data = session.query(TaskData).filter(TaskData.id == self.id).first()
@@ -212,7 +227,7 @@ class Task(object):
 
 class Comment(object):
     """
-    Wraps to recive database comment objects.
+    A Comment is associated with a task change and holds the test entered by the user.
     """
 
     def __init__(self, model):
@@ -227,7 +242,7 @@ class Comment(object):
 
 class TaskHolder(object):
     """
-    Base class which provides base functionality to return associated task objects.
+    Base class which provides methods for the associated task object.
     """
 
     def __init__(self, model):
@@ -251,9 +266,16 @@ class TaskHolder(object):
 
     @property
     def tasks(self):
+        """All tasks for this item.
+        Queries the database for all tasks associated with this item and returns them.
+
+        Returns:
+            list(Task): all tasks for this item.
+
+        """
         with session_scope() as session:
-            asset = session.query(self.model_type).filter(self.model_type.id == self.id).first()
-            return [Task(task) for task in asset.tasks if not task.parent_task]
+            item = session.query(self.model_type).filter(self.model_type.id == self.id).first()
+            return [Task(task) for task in item.tasks if not task.parent_task]
 
 
 class Asset(TaskHolder):
@@ -457,12 +479,28 @@ def get_project_by_name(name):
 
 
 def get_all_projects():
+    """All projects available in the database.
+
+    Returns:
+        list(Project): all projects available in the database
+
+    """
     with session_scope() as session:
         project_models = session.query(ProjectData).all()
         return [Project(model=project_model) for project_model in project_models]
 
 
 def get_all_tasks(user=None, state=None):
+    """All tasks in the database. Optional for the given user and/or state.
+
+    Args:
+        user (User): tasks must be assigned to this user to be returned.
+        state (str): tasks must have this state to be returned.
+
+    Returns:
+        list(Task): all task matching the criteria.
+
+    """
     with session_scope() as session:
         tasks_models = session.query(TaskData)
         if user:
@@ -474,6 +512,15 @@ def get_all_tasks(user=None, state=None):
 
 
 def get_task_templates_by_category_name(category):
+    """Get the task templates defined in tasker.templates for the given categorie.
+
+    Args:
+        category (str): 'shot' or 'asset'
+
+    Returns:
+        dict: of registered templates for the given category
+
+    """
     all_templates = templates.templates_by_category
     if category not in all_templates:
         log.error('{category} is not defined in task templates.'.format(category=category))
@@ -482,23 +529,44 @@ def get_task_templates_by_category_name(category):
 
 
 def new_user(name):
+    """Creates a new user in the databse.
+    Creates a new user with the given name in the database. If a user with this name exists already creation is skipped.
+    Args:
+        name (str): name of the new user.
+
+    """
     user = UserData(name=name)
     with session_scope() as session:
         exists = session.query(UserData).filter_by(name=name).first()
         if exists:
             log.warning('User already exists. Skipping creation.')
-            return None
+            return
         log.info('Created new User {name}'.format(name=name))
         session.add(user)
 
 
 def get_all_users():
+    """ Returns all users in the database.
+
+    Returns:
+        list(User): all users in the database
+
+    """
     with session_scope() as session:
         users = [User(data) for data in session.query(UserData).all()]
         return users
 
 
 def get_user_by_name(name):
+    """Find a user in the database by it's name.
+    Queries the database for the username. If it exists it's returned otherwise a ValueError is raised.
+    Args:
+        name (str): username to search for
+
+    Returns:
+        User: the user with the given name.
+
+    """
     with session_scope() as session:
         user = session.query(UserData).filter_by(name=name).first()
         if not user:

@@ -19,6 +19,8 @@ FORMAT = "%(filename)s:%(funcName)s - %(message)s"
 logging.basicConfig(format=FORMAT, level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
+from contextlib import contextmanager
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -32,3 +34,16 @@ engine = create_engine(database)
 Base.metadata.bind = engine
 Session = sessionmaker(bind=engine)
 
+
+@contextmanager
+def session_scope():
+    """Provides a transactional scope around a series of operations."""
+    session = Session()
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()

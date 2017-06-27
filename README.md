@@ -24,7 +24,7 @@ to run in standalone GUI mode you need also any of:
 
 
 #### Examples:
-SideEffects Houdini:
+#####SideEffects Houdini:
 
     import hou  # Houdini Api
     import tasker.ui as tasker
@@ -32,13 +32,18 @@ SideEffects Houdini:
     window = tasker.MainWindow(parent=houdini_window)
     window.show()
 
-Foundry Nuke:
+#####Foundry Nuke:
 
     import tasker.ui as tasker
-    reload(tasker)
     window = tasker.MainWindow()
     window.show()
 
+
+#####Autodesk Maya:
+
+    import tasker.ui as tasker
+    window = tasker.MainWindow()
+    window.show() 
 
 
 After that you want to create a new project. To do so go to "Project > New Project".
@@ -55,7 +60,8 @@ have a look into the template.py There you can define new tasks, task templates 
 
 
 
-#### TODO:
+
+##### TODO:
 - adding subtasks to existing tasks
 - exchange the current state handling implementation with a finite state machine
 - increase test coverage

@@ -4,10 +4,10 @@
 [![Documentation Status](https://readthedocs.org/projects/tasker/badge/?version=latest)](http://tasker.readthedocs.io/en/latest/?badge=latest)
 
 
-# tasker
+
+# tasker <img src="https://github.com/DominikPott/tasker/blob/master/tasker/icons/tasker.png" alt="tasker_icon" width="48" />
 A task manager for animation and vfx film projects.
 
-<img src="https://github.com/DominikPott/tasker/blob/master/tasker/icons/tasker.png" alt="tasker_icon" width="200" />
 
 ![project_view](https://github.com/DominikPott/tasker/blob/master/docs/source/images/project_view_v001.png)
 ![worklist_view](https://github.com/DominikPott/tasker/blob/master/docs/source/images/worklist_view_v001.png)

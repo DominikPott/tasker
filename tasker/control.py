@@ -197,7 +197,7 @@ class Task(object):
 
     @property
     def child_tasks(self):
-        """All chilkd/subtasks which belong to this task.
+        """All child / subtasks which belong to this task.
 
         Returns:
              list(Task): all child tasks
@@ -216,7 +216,7 @@ class Task(object):
 
         """
         with session_scope() as session:
-            comments = session.query(CommentData).filter(CommentData.task_id==self.id).all()
+            comments = session.query(CommentData).filter(CommentData.task_id == self.id).all()
             return [Comment(c) for c in comments]
 
     def add_comment(self, text):
@@ -380,8 +380,8 @@ class Project(object):
             project.assets.append(asset)
 
     def new_shot(self, name, template):
-        """ Creates a new shot with the given name in the project.
-        The new shot will use the provided template to generate tasks and dependenciesfor itself.
+        """ Creates a shot for this project.
+        The new shot will use the provided template to generate tasks and dependencies for itself.
 
         Args:
             name (str): name of the new shot. Aborts if a shot with this name already exists.

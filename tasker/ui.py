@@ -241,7 +241,6 @@ class CommentsList(QtWidgets.QWidget):
 
 
 class AssemblyWidget(QtWidgets.QWidget):
-    # TODO: make a more flat hirarchy or get rid of the assembly widget at all.
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
         self.create_layout()
@@ -344,7 +343,7 @@ class MainWindow(QtWidgets.QMainWindow):
             log.debug('Last set Project {name} does not exists anymore.'.format(name=last_project))
             pass
 
-    def new_project(self):  # TODO: set new project as current project
+    def new_project(self):
         name, ok = QtWidgets.QInputDialog.getText(self, 'New Project', 'New Project Name:')
         if ok and name:
             tasker.control.new_project(name=name)

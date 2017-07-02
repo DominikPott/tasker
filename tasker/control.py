@@ -22,7 +22,6 @@ Example:
 >>> state = modeling.state
 
 """
-
 import datetime
 
 from tasker import log, session_scope
@@ -366,7 +365,7 @@ class Project(object):
             layouts = session.query(LayoutData).filter(LayoutData.project_id==self.id)
             return [Layout(layout_data) for layout_data in layouts]
 
-    def new_asset(self, name, template=None):
+    def new_asset(self, name, template):
         """ Creates a new asset with the given name in the project.
         The new shot will use the provided template to generate tasks and dependenciesfor itself.
 
@@ -375,28 +374,12 @@ class Project(object):
             template (dict): A configuration file to generate tasks and dependencies for the new asset from.
         """
         log.info('New Asset {name}'.format(name=name))
-        if not template:
-            log.info('No asset template supplied. Using animation_asset.')
-            template = templates.asset['feature_animation_prop_asset']
-        tasks = []
-        for task_name in template['tasks']:
-            tasks.append(TaskData(name=task_name, state=State.can_start))
-        for task in tasks:
-            log.info('Tasks {task}'.format(task=task.name))
-            dependencies = []
-            for dependency in template['dependencies'][task.name]:
-                dependencies.extend([t for t in tasks if t.name == dependency])
-            log.info('Dependencies: {d}'.format(d=[dep.name for dep in dependencies]))
-            task.dependencies = dependencies
-            if dependencies:
-                task.state=State.pending
-
-        asset = AssetData(name=name, tasks=tasks)
+        asset = AssetData(name=name, tasks=tasks_from_template(template=template))
         with session_scope() as session:
-            project = session.query(ProjectData).filter(ProjectData.id==self.id).first()
+            project = session.query(ProjectData).filter(ProjectData.id == self.id).first()
             project.assets.append(asset)
 
-    def new_shot(self, name, template=None):
+    def new_shot(self, name, template):
         """ Creates a new shot with the given name in the project.
         The new shot will use the provided template to generate tasks and dependenciesfor itself.
 
@@ -404,29 +387,11 @@ class Project(object):
             name (str): name of the new shot. Aborts if a shot with this name already exists.
             template (dict): A configuration file to generate tasks and dependencies for the new shot from.
 
-        Returns:
-
         """
         log.info('New ShotData {name}'.format(name=name))
-        if not template:
-            log.info('No shot template supplied. Using animation_shot.')
-            template = templates.shot['shortfilm_shot']
-        tasks = []
-        for task_name in template['tasks']:
-            tasks.append(TaskData(name=task_name, state=State.can_start))
-        for task in tasks:
-            log.info('Task: {t}'.format(t=task.name))
-            dependencies = []
-            for dependency in template['dependencies'][task.name]:
-                dependencies.extend([t for t in tasks if t.name == dependency])
-            log.info('Dependencies: {d}'.format(d=[dep.name for dep in dependencies]))
-            task.dependencies = dependencies
-            if dependencies:
-                task.state=State.pending
-
-        shot = ShotData(name=name, tasks=tasks)
+        shot = ShotData(name=name, tasks=tasks_from_template(template=template))
         with session_scope() as session:
-            project = session.query(ProjectData).filter(ProjectData.id==self.id).first()
+            project = session.query(ProjectData).filter(ProjectData.id == self.id).first()
             project.shots.append(shot)
 
 
@@ -580,3 +545,27 @@ def get_user_by_name(name):
         if not user:
             raise ValueError('Username {user} not in database'.format(user=name))
         return User(model=user)
+
+
+def tasks_from_template(template):
+    """Converts a template to a list of tasks.
+
+    Args:
+        template (dict): A configuration file to generate tasks and dependencies for the new asset from.
+
+    Returns:
+        list(Task): tasks defined by the given template.
+    """
+    tasks = []
+    for task_name in template['tasks']:
+        tasks.append(TaskData(name=task_name, state=State.can_start))
+    for task in tasks:
+        log.info('Tasks {task}'.format(task=task.name))
+        dependencies = []
+        for dependency in template['dependencies'][task.name]:
+            dependencies.extend([t for t in tasks if t.name == dependency])
+        log.info('Dependencies: {d}'.format(d=[dep.name for dep in dependencies]))
+        task.dependencies = dependencies
+        if dependencies:
+            task.state = State.pending
+    return tasks

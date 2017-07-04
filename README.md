@@ -67,5 +67,9 @@ have a look into the template.py There you can define new tasks, task templates 
 
 ##### TODO:
 - adding subtasks to existing tasks
+- deleting things :)
 - exchange the current state handling implementation with a finite state machine
 - increase test coverage
+
+- adding node editor to generate tasks
+- using builder pattern to gnerate shots / assets.

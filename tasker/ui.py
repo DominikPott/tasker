@@ -31,6 +31,7 @@ class ProjectTree(QtWidgets.QWidget):
         self.setLayout(root_layout)
 
         self.search_bar = QtWidgets.QLineEdit()
+        self.search_bar.setPlaceholderText('Filter for asset or shot')
         root_layout.addWidget(self.search_bar)
 
         self.overview_tab_container = QtWidgets.QTabWidget()
@@ -290,6 +291,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.make_menu_bar()
         self.connect_signals()
         self.refresh_ui.emit()
+        self.setFocus()
 
     def make_menu_bar(self):
         menu_bar = self.menuBar()

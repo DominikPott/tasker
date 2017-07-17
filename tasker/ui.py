@@ -182,7 +182,24 @@ class ProjectTree(QtWidgets.QWidget):
     def filter_by_searchbar(self, unfiltered):
         filter_word = self.search_bar.text()
         if filter_word:
-            filtered = [item for item in unfiltered if filter_word in item.name]
+            filtered = set()
+            for item in unfiltered:  # filter the item names
+                if filter_word in item.name:
+                    filtered.add(item)
+                    continue
+                for task in item.tasks:  # Filter the items tasks
+                    if filter_word in task.name:
+                        filtered.add(item)
+                        break
+                    try:
+                        if filter_word in task.user.name:  # Filter assigned user
+                            filtered.add(item)
+                            break
+                    except AttributeError:
+                        pass
+
+
+
             return filtered
         return unfiltered
 

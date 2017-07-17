@@ -67,6 +67,21 @@ class ProjectTree(QtWidgets.QWidget):
         self.search_bar.returnPressed.connect(self.update_trees)
 
     def project_context_menu(self, pos):
+        clicket_item = self.project_widget.itemAt(pos)
+        if not clicket_item.parent():
+            self.creation_menu(pos=pos)
+        elif not clicket_item.parent().parent():
+            self.asset_menu(pos=pos)
+        else:
+            self.assignment_menu(pos=pos)
+
+    def assignment_menu(self, pos):
+        """Creates an assignment context menu.
+
+        Args:
+            pos: cursor position
+
+        """
         menu = QtWidgets.QMenu(self)
         set_state_action = QtWidgets.QAction('Set state', self)
         set_state_action.triggered.connect(self.set_state)
@@ -76,7 +91,54 @@ class ProjectTree(QtWidgets.QWidget):
         menu.addAction(assign_user_action)
         menu.popup(self.project_widget.mapToGlobal(pos))
 
+    def creation_menu(self, pos):
+        """Creates a context menu at cursor position to create new shots and assets.
+
+        Args:
+            pos: cursor position
+
+        """
+        menu = QtWidgets.QMenu(self)
+        new_asset_action = QtWidgets.QAction('New Asset', self)
+        new_asset_action.triggered.connect(self.parent().parent().new_asset)
+        menu.addAction(new_asset_action)
+        new_shot_action= QtWidgets.QAction('New Shot', self)
+        new_shot_action.triggered.connect(self.parent().parent().new_shot)
+        menu.addAction(new_shot_action)
+        menu.popup(self.project_widget.mapToGlobal(pos))
+
+    def asset_menu(self, pos):
+        """context menu do handling existing assets. Renaming and deletion.
+
+        Args:
+            pos: cursor position
+
+        """
+        menu = QtWidgets.QMenu(self)
+        rename_asset_action = QtWidgets.QAction('Rename', self)
+        #rename_asset_action.triggered.connect(self.parent().parent().new_asset)
+        rename_asset_action.setEnabled(False)
+        menu.addAction(rename_asset_action)
+        delete_asset_action = QtWidgets.QAction('Delete', self)
+        # delete_asset_action.triggered.connect(self.parent().parent().new_asset)
+        delete_asset_action.setEnabled(False)
+        menu.addAction(delete_asset_action)
+        menu.addSeparator()
+        edit_tasks_aciton= QtWidgets.QAction('Edit tasks', self)
+        # edit_tasks_aciton.triggered.connect(self.parent().parent().new_asset)
+        edit_tasks_aciton.setEnabled(False)
+        menu.addAction(edit_tasks_aciton)
+        menu.popup(self.project_widget.mapToGlobal(pos))
+
     def worklist_context_menu(self, pos):
+        """context menu for the worklist widget to user action for the current task.
+
+        Args:
+            pos:
+
+        Returns:
+
+        """
         menu = QtWidgets.QMenu(self)
         set_state_action = QtWidgets.QAction('Set state', self)
         set_state_action.triggered.connect(self.set_state)
@@ -103,6 +165,7 @@ class ProjectTree(QtWidgets.QWidget):
             return
         assets_root = QtWidgets.QTreeWidgetItem()
         assets_root.setText(0, 'Assets')
+
         self.project_widget.insertTopLevelItem(0, assets_root)
         assets = self.filter_by_searchbar(project.assets)
         self.fill_tree(items_to_add=assets, parent=assets_root)

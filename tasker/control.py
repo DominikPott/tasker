@@ -75,8 +75,10 @@ class Task(object):
         """
         with session_scope() as session:
             task_data = session.query(TaskData).filter(TaskData.id == self.id).first()
-            user_data = session.query(UserData).filter(UserData.id == user.id).first()
-            log.debug('{user} assigned to {task}'.format(user=user_data.name, task=task_data.name))
+            user_data = None
+            if user:
+                user_data = session.query(UserData).filter(UserData.id == user.id).first()
+                log.debug('{user} assigned to {task}'.format(user=user_data.name, task=task_data.name))
             task_data.user = user_data
 
     @property
@@ -189,6 +191,7 @@ class Task(object):
             task = session.query(TaskData).filter(TaskData.id == self.id).first()
             parent = task.parent
             if not parent:
+                log.debug('No parent for {task}'.format(task=task.name))
                 return None
             if isinstance(parent, AssetData):
                 return Asset(parent)
@@ -244,12 +247,14 @@ class Comment(object):
         self.datetime = model.datetime
 
     def __str__(self):
-        return "{date} {text}".format(date=self.datetime.strftime("%Y-%m-%d %H:%M:%S"), text=self.text)
+        return "{date} {text}.\n".format(date=self.datetime.strftime("%Y-%m-%d %H:%M:%S"), text=self.text)
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class TaskHolder(object):
-    """
-    Base class which provides methods for the associated task object.
+    """Base class which provides methods to work with tasks.
     """
 
     def __init__(self, model):
@@ -270,6 +275,23 @@ class TaskHolder(object):
                 return task
         else:
             raise KeyError('Task {name} not found in asset tasks'.format(name=name))
+
+    def delete(self):
+        """Removes this asset from the database and deassociates all asset tasks from the assigned user.
+
+        Returns:
+            bool: True if deleteoin was successfull, False otherwise.
+
+        """
+        tasks = self.tasks
+        for task in tasks:
+            task.user = None
+
+
+        with session_scope() as session:
+            item = session.query(self.model_type).filter(self.model_type.id == self.id)
+            item.delete(synchronize_session = False)
+            return True
 
     @property
     def tasks(self):

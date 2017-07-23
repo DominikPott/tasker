@@ -77,7 +77,7 @@ class TaskData(Base):
 
     # Associate multiple parents with the taskData. Example: http://docs.sqlalchemy.org/en/latest/_modules/examples/generic_associations/discriminator_on_association.html
     association_id=Column(Integer, ForeignKey('task_association.id'))
-    association = relationship('TaskAssociation', backref = 'tasks')
+    association = relationship('TaskAssociation',cascade="all, delete-orphan",single_parent=True, backref = 'tasks')
     parent = association_proxy('association', 'parent')
 
 

@@ -67,10 +67,10 @@ class ProjectTree(QtWidgets.QWidget):
         self.search_bar.returnPressed.connect(self.update_trees)
 
     def project_context_menu(self, pos):
-        clicket_item = self.project_widget.itemAt(pos)
-        if not clicket_item.parent():
+        clicked_item = self.project_widget.itemAt(pos)
+        if not clicked_item.parent():
             self.creation_menu(pos=pos)
-        elif not clicket_item.parent().parent():
+        elif not clicked_item.parent().parent():
             self.asset_menu(pos=pos)
         else:
             self.assignment_menu(pos=pos)
@@ -120,8 +120,7 @@ class ProjectTree(QtWidgets.QWidget):
         rename_asset_action.setEnabled(False)
         menu.addAction(rename_asset_action)
         delete_asset_action = QtWidgets.QAction('Delete', self)
-        # delete_asset_action.triggered.connect(self.parent().parent().new_asset)
-        delete_asset_action.setEnabled(False)
+        delete_asset_action.triggered.connect(self.delete_asset)
         menu.addAction(delete_asset_action)
         menu.addSeparator()
         edit_tasks_aciton= QtWidgets.QAction('Edit tasks', self)
@@ -197,9 +196,6 @@ class ProjectTree(QtWidgets.QWidget):
                             break
                     except AttributeError:
                         pass
-
-
-
             return filtered
         return unfiltered
 
@@ -233,10 +229,7 @@ class ProjectTree(QtWidgets.QWidget):
             return
         tasks = user.tasks  # TODO: this will only work if theres just on project otherwise tasks gets mixed up.
         self.worklist_widget.clear()
-        filter_word = self.search_bar.text()
-        if filter_word:
-            tasks = [task for task in tasks if filter_word in task.name or filter_word in task.parent.name]
-        for task in tasks:
+        for task in self.filter_by_searchbar(unfiltered=tasks):
             item = QtWidgets.QTreeWidgetItem()
             item.setText(0, task.parent.name)
             item.setData(0, QtCore.Qt.UserRole, task)
@@ -244,7 +237,7 @@ class ProjectTree(QtWidgets.QWidget):
             item.setText(2, task.state)
             self.worklist_widget.addTopLevelItem(item)
 
-    # Context Menu Functions
+    # Task Context Menu Functions
 
     def set_state(self):
         """Context Menu Slot to set the state of the selected task."""
@@ -283,6 +276,21 @@ class ProjectTree(QtWidgets.QWidget):
                 user_index = user_names.index(user)
                 task.user = users[user_index]
                 self.add_task_items(parent=item.parent())
+
+
+    # Asset Context Menu
+
+    def delete_asset(self):
+        """Deletes the selected item from the database.
+        """
+        log.debug('Running delete_asset.')
+        current_widget=self.overview_tab_container.currentWidget()
+        # Tree widget allows only one selected item
+        item = current_widget.selectedItems()[0]
+        name, ok = QtWidgets.QInputDialog.getText(self, 'Delete Item', 'Enter Asset Name to delete:')
+        if ok and name == item.text(0):
+            data = item.data(0, QtCore.Qt.UserRole)
+            data.delete()
 
 
 class CommentsList(QtWidgets.QWidget):

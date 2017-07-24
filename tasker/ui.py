@@ -14,6 +14,22 @@ TASKER_ICON= os.path.join(TASKER_DIR, 'icons', 'tasker.png')
 PICTURE_PLACEHOLDER= os.path.join(TASKER_DIR, 'icons', 'template.png')
 
 
+def update_trees_afterwards(func):
+    """Decorator to refresh the ui for context menu functions.
+
+    Args:
+        func: Context menu function to be decorated.
+
+    Returns:
+        fund: Decorated function.
+
+    """
+    def update_wrapper(*args, **kwargs):
+        func(*args, **kwargs)
+        args[0].update_trees()
+    return update_wrapper
+
+
 class ProjectTree(QtWidgets.QWidget):
     """Tree Widget to display project , working and done lists."""
 
@@ -238,7 +254,7 @@ class ProjectTree(QtWidgets.QWidget):
             self.worklist_widget.addTopLevelItem(item)
 
     # Task Context Menu Functions
-
+    @update_trees_afterwards
     def set_state(self):
         """Context Menu Slot to set the state of the selected task."""
         log.debug('Running set state.')
@@ -252,7 +268,6 @@ class ProjectTree(QtWidgets.QWidget):
                 self.add_comment(task=task, new_state=new_state)
                 task.state=new_state
                 self.add_task_items(parent=item.parent())
-                self.update_trees()
 
     def add_comment(self, task, new_state):
         comment, ok = QtWidgets.QInputDialog.getText(self, 'Write Comment', 'Comment:')
@@ -263,6 +278,7 @@ class ProjectTree(QtWidgets.QWidget):
                                                                             )
             task.add_comment(text=text)
 
+    @update_trees_afterwards
     def assign_user(self):
         """Context Menu Slot to assign a user to the selected task."""
         log.debug('Running assign user.')
@@ -276,10 +292,10 @@ class ProjectTree(QtWidgets.QWidget):
                 user_index = user_names.index(user)
                 task.user = users[user_index]
                 self.add_task_items(parent=item.parent())
-        self.update_trees()
+
 
     # Asset Context Menu
-
+    @update_trees_afterwards
     def delete_asset(self):
         """Deletes the selected item from the database.
         """
@@ -291,7 +307,6 @@ class ProjectTree(QtWidgets.QWidget):
         if ok and name == item.text(0):
             data = item.data(0, QtCore.Qt.UserRole)
             data.delete()
-        self.update_trees()
 
 
 class CommentsList(QtWidgets.QWidget):

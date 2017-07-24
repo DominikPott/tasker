@@ -229,7 +229,7 @@ class ProjectTree(QtWidgets.QWidget):
             return
         tasks = user.tasks  # TODO: this will only work if theres just on project otherwise tasks gets mixed up.
         self.worklist_widget.clear()
-        for task in self.filter_by_searchbar(unfiltered=tasks):
+        for task in tasks:
             item = QtWidgets.QTreeWidgetItem()
             item.setText(0, task.parent.name)
             item.setData(0, QtCore.Qt.UserRole, task)
@@ -276,7 +276,7 @@ class ProjectTree(QtWidgets.QWidget):
                 user_index = user_names.index(user)
                 task.user = users[user_index]
                 self.add_task_items(parent=item.parent())
-
+        self.update_trees()
 
     # Asset Context Menu
 
@@ -291,6 +291,7 @@ class ProjectTree(QtWidgets.QWidget):
         if ok and name == item.text(0):
             data = item.data(0, QtCore.Qt.UserRole)
             data.delete()
+        self.update_trees()
 
 
 class CommentsList(QtWidgets.QWidget):
